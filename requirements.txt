@@ -1,10 +1,8 @@
+google-genai
 numpy<2
-openai
 pandas
 pybind11>=2.12
 python-dotenv
 requests
 scikit-learn
 sentence-transformers
-tiktoken
-tqdm

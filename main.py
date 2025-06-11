@@ -5,8 +5,7 @@ from datetime import datetime, timedelta, timezone
 from fetchers.gdelt_fetcher import fetch_from_gdelt
 from fetchers.newsapi_fetcher import fetch_from_newsapi
 from semantic_similarity import get_relevant_articles
-from summarize import summarize_with_openai
-from tqdm import tqdm
+from summarize_gemini import summarize_article_gemini
 
 
 def chunk_list(lst, chunk_size):
@@ -36,6 +35,7 @@ def main():
     output_dir_top_articles = "top_articles"
     os.makedirs(output_dir_top_articles, exist_ok=True)
 
+    timestamp = datetime.now().strftime("%Y-%m-%d")
     # to_date = datetime.now(timezone.utc).date()
     # from_date = to_date - timedelta(days=7)
 
@@ -71,7 +71,6 @@ def main():
 
     # df = normalize_and_merge(all_news_items, all_gdelt_items)
 
-    timestamp = datetime.now().strftime("%Y-%m-%d")
     # filename = f"weekly_combined_{timestamp}.csv"
     # output_path = os.path.join(output_dir_weekly_archives, filename)
     # df.to_csv(output_path, index=True)
@@ -82,16 +81,27 @@ def main():
 
     query = "data procurement and data acquisition"
 
-    top_articles = get_relevant_articles(loaded_df, query, 2)
+    top_articles = get_relevant_articles(loaded_df, query, 10)
 
-    print(f"\n\n=== Checkpoint ==={top_articles}")
+    print(f"\n=== Summarizing Top Articles ===")
 
-    tqdm.pandas()
-    top_articles["summary"] = top_articles["content"].progress_apply(summarize_with_openai)
+    top_articles["summary"] = top_articles.apply(
+        lambda row: summarize_article_gemini(
+            source=row["source"],
+            title=row["title"],
+            url=row["url"],
+            published_at=row["published_at"],
+            description=row["description"],
+            content=row["content"],
+        ),
+        axis=1,
+    )
 
     filename = f"top_articles_{timestamp}.csv"
     output_path = os.path.join(output_dir_top_articles, filename)
     top_articles.to_csv(output_path, index=True)
+
+    print(f"===         Completed        ===\n")
 
 
 if __name__ == "__main__":

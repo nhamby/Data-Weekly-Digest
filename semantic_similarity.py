@@ -1,7 +1,6 @@
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 
 
 def get_relevant_articles(df: pd.DataFrame, query: str, top_n: int = 10):
