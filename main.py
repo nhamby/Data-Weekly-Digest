@@ -2,6 +2,7 @@ import json
 import os
 import pandas as pd
 from datetime import datetime, timedelta, timezone
+from email_creation import send_news_email, RECIPIENT_EMAIL
 from fetchers.gdelt_fetcher import fetch_from_gdelt
 from fetchers.newsapi_fetcher import fetch_from_newsapi
 from semantic_similarity import get_relevant_articles
@@ -75,33 +76,41 @@ def main():
     # output_path = os.path.join(output_dir_weekly_archives, filename)
     # df.to_csv(output_path, index=True)
 
-    loaded_df = pd.read_csv(
-        "weekly_archives/weekly_combined_2025-06-11.csv"
-    )  # .head(139)
+    # loaded_df = pd.read_csv(
+    #     "weekly_archives/weekly_combined_2025-06-11.csv"
+    # )  # .head(139)
 
-    query = "data procurement and data acquisition"
+    # query = "data procurement and data acquisition"
 
-    top_articles = get_relevant_articles(loaded_df, query, 10)
+    # top_articles = get_relevant_articles(loaded_df, query, 10)
 
-    print(f"\n=== Summarizing Top Articles ===")
+    # print(f"\n=== Summarizing Top Articles ===")
 
-    top_articles["summary"] = top_articles.apply(
-        lambda row: summarize_article_gemini(
-            source=row["source"],
-            title=row["title"],
-            url=row["url"],
-            published_at=row["published_at"],
-            description=row["description"],
-            content=row["content"],
-        ),
-        axis=1,
-    )
+    # top_articles["summary"] = top_articles.apply(
+    #     lambda row: summarize_article_gemini(
+    #         source=row["source"],
+    #         title=row["title"],
+    #         url=row["url"],
+    #         published_at=row["published_at"],
+    #         description=row["description"],
+    #         content=row["content"],
+    #     ),
+    #     axis=1,
+    # )
 
-    filename = f"top_articles_{timestamp}.csv"
-    output_path = os.path.join(output_dir_top_articles, filename)
-    top_articles.to_csv(output_path, index=True)
+    # filename = f"top_articles_{timestamp}.csv"
+    # output_path = os.path.join(output_dir_top_articles, filename)
+    # top_articles.to_csv(output_path, index=True)
 
-    print(f"===         Completed        ===\n")
+    # print(f"===         Completed        ===\n")
+
+    loaded_top_df = pd.read_csv("top_articles/top_articles_2025-06-11.csv")
+
+    recipient_email = RECIPIENT_EMAIL
+
+    print(f"=== Sending Email to {recipient_email} ===")
+    send_news_email(loaded_top_df, recipient_email)
+    print(f"===   Sent Email to {recipient_email}  ===")
 
 
 if __name__ == "__main__":

@@ -17,8 +17,6 @@ def summarize_article_gemini(
     Article Details:
     - Source: {source}
     - Title: {title}
-    - Published On: {published_at}
-    - URL: {url}
     - Description: {description}
 
     Full Content:
