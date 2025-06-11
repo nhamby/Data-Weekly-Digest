@@ -3,4 +3,6 @@ openai
 pandas
 python-dotenv
 requests
+scikit-learn
+sentence-transformers
 tqdm

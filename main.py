@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta, timezone
 from fetchers.gdelt_fetcher import fetch_from_gdelt
 from fetchers.newsapi_fetcher import fetch_from_newsapi
+from semantic_similarity import get_relevant_articles
 
 
 def chunk_list(lst, chunk_size):
@@ -27,8 +28,11 @@ def main():
     with open(query_filepath, "r") as f:
         query_terms = json.load(f)
 
-    output_dir = "weekly_archives"
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir_weekly_archives = "weekly_archives"
+    os.makedirs(output_dir_weekly_archives, exist_ok=True)
+
+    output_dir_top_articles = "top_articles"
+    os.makedirs(output_dir_top_articles, exist_ok=True)
 
     to_date = datetime.now(timezone.utc).date()
     from_date = to_date - timedelta(days=7)
@@ -66,9 +70,21 @@ def main():
     df = normalize_and_merge(all_news_items, all_gdelt_items)
 
     timestamp = datetime.now().strftime("%Y-%m-%d")
-    filename = f"weekly_combined_{timestamp}.csv"
-    output_path = os.path.join(output_dir, filename)
-    df.to_csv(output_path, index=True)
+    # filename = f"weekly_combined_{timestamp}.csv"
+    # output_path = os.path.join(output_dir_weekly_archives, filename)
+    # df.to_csv(output_path, index=True)
+
+    loaded_df = pd.read_csv("weekly_archives/weekly_combined_2025-06-11.csv")#.head(139)
+
+    query = "data procurement and data acquisition"
+
+    top_articles = get_relevant_articles(loaded_df, query, 10)
+
+    print(f"\n\n=== TOP ARTICLES ==={top_articles}")
+
+    filename = f"top_articles_{timestamp}.csv"
+    output_path = os.path.join(output_dir_top_articles, filename)
+    top_articles.to_csv(output_path, index=True)
 
 
 if __name__ == "__main__":
