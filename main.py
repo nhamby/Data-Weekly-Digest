@@ -68,7 +68,7 @@ def main():
     timestamp = datetime.now().strftime("%Y-%m-%d")
     filename = f"weekly_combined_{timestamp}.csv"
     output_path = os.path.join(output_dir, filename)
-    df.to_csv(output_path, index=False)
+    df.to_csv(output_path, index=True)
 
 
 if __name__ == "__main__":
