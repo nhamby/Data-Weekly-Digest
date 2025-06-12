@@ -12,7 +12,7 @@ def summarize_article_gemini(
 ) -> str:
 
     prompt = f"""
-    Please summarize the following article concisely. Focus on two main points, each with their own sentence. Do not provide any additional commentary or trailing newline characters.
+    Please summarize the following article concisely but thoroughly, with a focus on the takeaways relevant to a data startup. Focus on three main points, preferably with a detailed sentence for each. Sentences should be no longer than 20 words but no shorter than 10. Try to include key metrics such as percentages, statistics, or any numerical data of importance. Do not provide any additional commentary or trailing newline characters.
 
     Article Details:
     - Source: {source}
