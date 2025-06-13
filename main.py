@@ -37,80 +37,75 @@ def main():
     os.makedirs(output_dir_top_articles, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y-%m-%d")
-    # to_date = datetime.now(timezone.utc).date()
-    # from_date = to_date - timedelta(days=7)
+    to_date = datetime.now(timezone.utc).date()
+    from_date = to_date - timedelta(days=7)
 
-    # print(f"=== Fetching NewsAPI (from {from_date} to {to_date}) ===")
-    # all_news_items = []
-    # for chunk in chunk_list(query_terms, chunk_size=6):
-    #     print(f">>> NewsAPI chunk: {chunk}")
-    #     try:
-    #         items = fetch_from_newsapi(
-    #             query_terms=chunk, from_date=from_date, to_date=to_date, page_size=50
-    #         )
-    #         print(f"Retrieved {len(items)} items\n")
-    #         all_news_items.extend(items)
-    #     except Exception as e:
-    #         print(f"NewsAPI chunk error: {e}\n")
+    print(f"\nFetching NewsAPI (from {from_date} to {to_date})...")
+    all_news_items = []
+    for chunk in chunk_list(query_terms, chunk_size=6):
+        try:
+            items = fetch_from_newsapi(
+                query_terms=chunk, from_date=from_date, to_date=to_date, page_size=50
+            )
+            all_news_items.extend(items)
+        except Exception as e:
+            print(f"\tNewsAPI chunk error: {e}\n")
 
-    # print(f"Total NewsAPI articles fetched: {len(all_news_items)}\n")
+    print(f"\tTotal NewsAPI articles fetched: {len(all_news_items)}\n")
 
-    # print(f"=== Fetching GDELT (from {from_date} to {to_date}) ===")
-    # all_gdelt_items = []
-    # for chunk in chunk_list(query_terms, chunk_size=6):
-    #     print(f">>> GDELT chunk: {chunk}")
-    #     try:
-    #         items = fetch_from_gdelt(
-    #             query_terms=chunk, maxrecords=50, from_date=from_date, to_date=to_date
-    #         )
-    #         print(f"Retrieved {len(items)} items\n")
-    #         all_gdelt_items.extend(items)
-    #     except Exception as e:
-    #         print(f"GDELT chunk error: {e}\n")
+    print(f"Fetching GDELT (from {from_date} to {to_date})...")
+    all_gdelt_items = []
+    for chunk in chunk_list(query_terms, chunk_size=6):
+        try:
+            items = fetch_from_gdelt(
+                query_terms=chunk, maxrecords=50, from_date=from_date, to_date=to_date
+            )
+            all_gdelt_items.extend(items)
+        except Exception as e:
+            print(f"\tGDELT chunk error: {e}\n")
 
-    # print(f"Total GDELT articles fetched: {len(all_gdelt_items)}\n")
+    print(f"\tTotal GDELT articles fetched: {len(all_gdelt_items)}\n")
 
-    # df = normalize_and_merge(all_news_items, all_gdelt_items)
+    df = normalize_and_merge(all_news_items, all_gdelt_items)
 
-    # filename = f"weekly_combined_{timestamp}.csv"
-    # output_path = os.path.join(output_dir_weekly_archives, filename)
-    # df.to_csv(output_path, index=True)
+    filename = f"weekly_combined_{timestamp}.csv"
+    output_path = os.path.join(output_dir_weekly_archives, filename)
+    df.to_csv(output_path, index=True)
 
-    # loaded_df = pd.read_csv(
-    #     "weekly_archives/weekly_combined_2025-06-11.csv"
-    # )  # .head(139)
+    loaded_df_filename = f"weekly_archives/weekly_combined_{timestamp}.csv"
+    loaded_df = pd.read_csv(loaded_df_filename)
 
-    # query = "data procurement and data acquisition"
+    query = "data procurement and data acquisition"
 
-    # top_articles = get_relevant_articles(loaded_df, query, 10)
+    top_articles = get_relevant_articles(loaded_df, query, 10)
 
-    # print(f"\n=== Summarizing Top Articles ===")
+    top_articles_filtered = top_articles[top_articles['source'] != "Pypi.org"].copy()
 
-    # top_articles["summary"] = top_articles.apply(
-    #     lambda row: summarize_article_gemini(
-    #         source=row["source"],
-    #         title=row["title"],
-    #         url=row["url"],
-    #         published_at=row["published_at"],
-    #         description=row["description"],
-    #         content=row["content"],
-    #     ),
-    #     axis=1,
-    # )
+    print(f"\nSummarizing Top Articles...\n")
 
-    # filename = f"top_articles_{timestamp}.csv"
-    # output_path = os.path.join(output_dir_top_articles, filename)
-    # top_articles.to_csv(output_path, index=True)
+    top_articles_filtered["summary"] = top_articles_filtered.apply(
+        lambda row: summarize_article_gemini(
+            source=row["source"],
+            title=row["title"],
+            url=row["url"],
+            published_at=row["published_at"],
+            description=row["description"],
+            content=row["content"],
+        ),
+        axis=1,
+    )
 
-    # print(f"===         Completed        ===\n")
+    filename = f"top_articles_{timestamp}.csv"
+    output_path = os.path.join(output_dir_top_articles, filename)
+    top_articles_filtered.to_csv(output_path, index=True)
 
-    loaded_top_df = pd.read_csv("top_articles/top_articles_2025-06-11.csv")
+    loaded_top_df_filename = f"top_articles/top_articles_{timestamp}.csv"
+    loaded_top_df = pd.read_csv(loaded_top_df_filename)
 
     recipient_email = RECIPIENT_EMAIL
 
-    print(f"=== Sending Email to {recipient_email} ===")
     send_news_email(loaded_top_df, recipient_email)
-    print(f"===   Sent Email to {recipient_email}  ===")
+    print(f"Email sent successfully to {recipient_email}!\n")
 
 
 if __name__ == "__main__":
