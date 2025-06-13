@@ -14,7 +14,7 @@ GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 # ARCHIE_APP_PASSWORD = os.getenv("ARCHIE_APP_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# HEADING_COLOR = "#148afe" 
+# HEADING_COLOR = "#148afe"
 HEADING_COLOR = "#00054B"  # Blue color for headings
 LOGO_PATH = "archie_logo_final.png"
 LOGO_CID = "archie_logo"
@@ -210,6 +210,5 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
                 server.starttls()
                 server.login(sender_email, sender_password)
                 server.sendmail(sender_email, recipient_email, msg.as_string())
-            print(f"Email sent successfully to {recipient_email}!")
         except Exception as e:
             print(f"Failed to send email: {e}")
