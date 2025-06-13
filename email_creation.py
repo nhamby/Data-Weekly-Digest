@@ -10,9 +10,12 @@ from datetime import datetime
 load_dotenv()
 GMAIL_EMAIL_ADDRESS = os.getenv("GMAIL_EMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+# ARCHIE_EMAIL_ADDRESS = os.getenv("ARCHIE_EMAIL_ADDRESS")
+# ARCHIE_APP_PASSWORD = os.getenv("ARCHIE_APP_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-HEADING_COLOR = "#148afe"  # Blue color for headings
+# HEADING_COLOR = "#148afe" 
+HEADING_COLOR = "#00054B"  # Blue color for headings
 LOGO_PATH = "archie_logo_final.png"
 LOGO_CID = "archie_logo"
 COMPANY_LOGO_ATH = "bsd_logo.png"
@@ -27,7 +30,7 @@ def create_email_body(df: pd.DataFrame) -> str:
           margin:0;
           padding:0;
           /* fallback for Outlook */
-          background-color:#148afe;
+          background-color:#88bef5;
           /* modern clients */
           background-image: linear-gradient(135deg, #EAF3FF 0%, #FFFFFF 100%);
           font-family:'Inter',sans-serif;
@@ -54,11 +57,11 @@ def create_email_body(df: pd.DataFrame) -> str:
               >
                 <!-- ARCHie logo -->
                 <tr>
-                  <td align="center" style="padding:20px 0 10px;">
+                  <td align="center" style="padding:20px 0 2px;">
                     <img
                       src="cid:{LOGO_CID}"
                       alt="ARCHie logo"
-                      width="150"
+                      width="250"
                       style="display:block; border:none;"
                     />
                   </td>
@@ -68,7 +71,7 @@ def create_email_body(df: pd.DataFrame) -> str:
                 <tr>
                   <td style="padding:0;">
                     <div style="
-                      height:6px;
+                      height:3px;
                       background: linear-gradient(90deg, #0056b3, #4A90E2);
                     "></div>
                   </td>
@@ -97,8 +100,8 @@ def create_email_body(df: pd.DataFrame) -> str:
                       font-size:16px;
                       line-height:1.5;
                     ">
-                      Good morning and a happy Monday, Blue Street!<br/>
-                      I've fetched this week's 10 most interesting developments in the tech & data space.<br/>
+                      Good morning and happy Monday, Blue Street!<br/>
+                      I've fetched this week's most interesting news in the tech & data space.<br/>
                         Until next week, enjoy the read!<br/>
                         <strong>— Archie</strong>
                     </p>
@@ -111,23 +114,23 @@ def create_email_body(df: pd.DataFrame) -> str:
                   <tr>
                     <td style="padding:0 20px 20px;">
                       <table width="100%" cellpadding="0" cellspacing="0" style="
-                        background-color:#0056b3;
+                        background-color:#CFE9FF;
                         border-radius:6px;
                         padding:15px;
                         border-left:6px solid #FFD700;
                       ">
                         <tr>
                           <td>
-                            <h2 style="margin:0 0 8px; font-size:18px; color:#FFFFFF;">
+                            <h2 style="margin:0 0 8px; font-size:18px; color:#00054B;">
                               🦴&nbsp;
-                              <a href="{row['url']}" style="color:#FFFFFF; text-decoration:none;">
+                              <a href="{row['url']}" style="color:#00054B; text-decoration:none;">
                                 {row['title']}
                               </a>
                             </h2>
-                            <p style="margin:0 0 8px; color:#FFFFFF; font-size:14px;">
+                            <p style="margin:0 0 8px; color:#00054B; font-size:14px;">
                               <strong>Source:</strong> {row['source']}
                             </p>
-                            <p style="margin:0; color:#FFFFFF; font-size:15px; line-height:1.4;">
+                            <p style="margin:0; color:#00054B; font-size:15px; line-height:1.4;">
                               {row['summary']}
                             </p>
                           </td>
@@ -169,6 +172,7 @@ def create_email_body(df: pd.DataFrame) -> str:
 def send_news_email(df: pd.DataFrame, recipient_email: str):
     sender_email = GMAIL_EMAIL_ADDRESS
     sender_password = GMAIL_APP_PASSWORD
+    # smtp_server = "smtp.office365.com"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
 
