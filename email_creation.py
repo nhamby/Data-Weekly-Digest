@@ -23,6 +23,7 @@ COMPANY_LOGO_CID = "bsd_logo"
 
 
 def create_email_body(df: pd.DataFrame) -> str:
+
     return f"""
     <html>
       <body
@@ -170,6 +171,7 @@ def create_email_body(df: pd.DataFrame) -> str:
 
 
 def send_news_email(df: pd.DataFrame, recipient_email: str):
+
     sender_email = GMAIL_EMAIL_ADDRESS
     sender_password = GMAIL_APP_PASSWORD
     # smtp_server = "smtp.office365.com"
@@ -186,7 +188,7 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
     msg["To"] = recipient_email
 
     alt = MIMEMultipart("alternative")
-    alt.attach(MIMEText(create_email_body(df), "html"))
+    alt.attach(MIMEText(email_body_html, "html"))
     msg.attach(alt)
 
     with open(LOGO_PATH, "rb") as img_file:
@@ -210,5 +212,6 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
                 server.starttls()
                 server.login(sender_email, sender_password)
                 server.sendmail(sender_email, recipient_email, msg.as_string())
+
         except Exception as e:
             print(f"Failed to send email: {e}")

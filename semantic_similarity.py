@@ -28,3 +28,11 @@ def get_relevant_articles(df: pd.DataFrame, query: str, top_n: int = 10):
     relevant_articles = df.sort_values(by="relevance_score", ascending=False)
 
     return relevant_articles.head(top_n)
+
+
+def filter_articles(top_articles: pd.DataFrame):
+
+    top_articles_filtered = top_articles[top_articles["source"] != "Pypi.org"].copy()
+    top_articles_filtered.reset_index(drop=True, inplace=True)
+
+    return top_articles_filtered
