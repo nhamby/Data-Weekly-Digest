@@ -46,13 +46,13 @@ def main():
 
     query = "data procurement and data acquisition"
 
-    top_articles = get_relevant_articles(loaded_df, query, 10)
+    articles_filtered = filter_articles(loaded_df)
 
-    top_articles_filtered = filter_articles(top_articles)
+    top_articles = get_relevant_articles(articles_filtered, query, 10)
     
     print(f"\nSummarizing Top Articles...\n")
 
-    top_articles_filtered["summary"] = top_articles_filtered.apply(
+    top_articles["summary"] = top_articles.apply(
         lambda row: summarize_article_gemini(
             source=row["source"],
             title=row["title"],
@@ -66,7 +66,7 @@ def main():
 
     filename = f"top_articles_{timestamp}.csv"
     output_path = os.path.join(output_dir_top_articles, filename)
-    top_articles_filtered.to_csv(output_path, index=True)
+    top_articles.to_csv(output_path, index=True)
 
     loaded_top_df_filename = f"top_articles/top_articles_{timestamp}.csv"
     loaded_top_df = pd.read_csv(loaded_top_df_filename)
