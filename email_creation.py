@@ -10,12 +10,10 @@ from datetime import datetime
 load_dotenv()
 GMAIL_EMAIL_ADDRESS = os.getenv("GMAIL_EMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-# ARCHIE_EMAIL_ADDRESS = os.getenv("ARCHIE_EMAIL_ADDRESS")
-# ARCHIE_APP_PASSWORD = os.getenv("ARCHIE_APP_PASSWORD")
+
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# HEADING_COLOR = "#148afe"
-HEADING_COLOR = "#00054B"  # Blue color for headings
+HEADING_COLOR = "#00054B"
 LOGO_PATH = "archie_logo_final.png"
 LOGO_CID = "archie_logo"
 COMPANY_LOGO_ATH = "bsd_logo.png"
@@ -181,7 +179,6 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
     email_subject = f"Archie's Digest - {datetime.now().strftime('%Y-%m-%d')}"
     email_body_html = create_email_body(df)
 
-    # msg = MIMEText(email_body_html, "html")
     msg = MIMEMultipart("related")
     msg["Subject"] = email_subject
     msg["From"] = sender_email
@@ -214,4 +211,4 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
                 server.sendmail(sender_email, recipient_email, msg.as_string())
 
         except Exception as e:
-            print(f"Failed to send email: {e}")
+            print(f"failed to send email: {e}")
