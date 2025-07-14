@@ -6,6 +6,7 @@ from email_creation import send_news_email, RECIPIENT_EMAIL
 from fetchers.gdelt_fetcher import fetch_all_from_gdelt
 from fetchers.newsapi_fetcher import fetch_all_from_newsapi
 from helper_functions import normalize_and_merge
+from html_export import export_html_to_clipboard, export_standalone_html
 from semantic_similarity import filter_articles, get_relevant_articles
 from summarize_gemini import summarize_article_gemini
 
@@ -20,26 +21,26 @@ def main():
     output_dir_weekly_archives = "weekly_archives"
     os.makedirs(output_dir_weekly_archives, exist_ok=True)
 
-    output_dir_top_articles = "top_articles"
+    output_dir_top_articles = "top_articles_archives"
     os.makedirs(output_dir_top_articles, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y-%m-%d")
     to_date = datetime.now(timezone.utc).date()
     from_date = to_date - timedelta(days=7)
 
-    all_newsapi_items = fetch_all_from_newsapi(
-        query_terms=query_terms, chunk_size=6, from_date=from_date, to_date=to_date
-    )
+    # all_newsapi_items = fetch_all_from_newsapi(
+    #     query_terms=query_terms, chunk_size=6, from_date=from_date, to_date=to_date
+    # )
 
-    all_gdelt_items = fetch_all_from_gdelt(
-        query_terms=query_terms, chunk_size=6, from_date=from_date, to_date=to_date
-    )
+    # all_gdelt_items = fetch_all_from_gdelt(
+    #     query_terms=query_terms, chunk_size=6, from_date=from_date, to_date=to_date
+    # )
 
-    df = normalize_and_merge(all_newsapi_items, all_gdelt_items)
+    # df = normalize_and_merge(all_newsapi_items, all_gdelt_items)
 
-    filename = f"weekly_combined_{timestamp}.csv"
-    output_path = os.path.join(output_dir_weekly_archives, filename)
-    df.to_csv(output_path, index=True)
+    # filename = f"weekly_combined_{timestamp}.csv"
+    # output_path = os.path.join(output_dir_weekly_archives, filename)
+    # df.to_csv(output_path, index=True)
 
     loaded_df_filename = f"weekly_archives/weekly_combined_{timestamp}.csv"
     loaded_df = pd.read_csv(loaded_df_filename)
@@ -49,8 +50,8 @@ def main():
     articles_filtered = filter_articles(loaded_df)
 
     top_articles = get_relevant_articles(articles_filtered, query, 10)
-    
-    print(f"\nSummarizing Top Articles...\n")
+
+    print(f"\nsummarizing top articles...\n")
 
     top_articles["summary"] = top_articles.apply(
         lambda row: summarize_article_gemini(
@@ -68,11 +69,16 @@ def main():
     output_path = os.path.join(output_dir_top_articles, filename)
     top_articles.to_csv(output_path, index=True)
 
-    loaded_top_df_filename = f"top_articles/top_articles_{timestamp}.csv"
+    loaded_top_df_filename = f"{output_dir_top_articles}/top_articles_{timestamp}.csv"
     loaded_top_df = pd.read_csv(loaded_top_df_filename)
 
     send_news_email(loaded_top_df, RECIPIENT_EMAIL)
-    print(f"Email sent successfully to {RECIPIENT_EMAIL}!\n")
+    print(f"email sent successfully to {RECIPIENT_EMAIL}\n")
+
+    html_filepath = export_standalone_html(loaded_top_df)
+    print(f"standalone HTML file created: {html_filepath}")
+
+    html_crm = export_html_to_clipboard(loaded_top_df)
 
 
 if __name__ == "__main__":
