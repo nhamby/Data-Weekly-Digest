@@ -1,4 +1,5 @@
-## .env file set-up
+# .env file set-up
+
 - GDELT_API_ENDPOINT="https://api.gdeltproject.org/api/v2/doc/doc"
 - NEWSAPI_KEY=...
 - OPENAI_API_KEY=...

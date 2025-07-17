@@ -3,7 +3,6 @@ import requests
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from helper_functions import chunk_list
-from pprint import pprint
 from urllib.parse import quote_plus
 
 
@@ -25,7 +24,7 @@ def fetch_chunk_from_newsapi(
 
     if to_date is None:
         to_date = datetime.now(timezone.utc).date()
-        
+
     if from_date is None:
         from_date = to_date - timedelta(days=7)
 
@@ -66,7 +65,7 @@ def fetch_all_from_newsapi(query_terms, chunk_size=6, from_date=None, to_date=No
 
     all_newsapi_items = []
 
-    print(f"\nFetching NewsAPI (from {from_date} to {to_date})...")
+    print(f"\nfetching NewsAPI (from {from_date} to {to_date})...")
 
     for chunk in chunk_list(query_terms, chunk_size):
 
@@ -79,6 +78,6 @@ def fetch_all_from_newsapi(query_terms, chunk_size=6, from_date=None, to_date=No
         except Exception as e:
             print(f"\tNewsAPI chunk error: {e}\n")
 
-    print(f"\tTotal NewsAPI articles fetched: {len(all_newsapi_items)}\n")
+    print(f"\ttotal NewsAPI articles fetched: {len(all_newsapi_items)}\n")
 
     return all_newsapi_items

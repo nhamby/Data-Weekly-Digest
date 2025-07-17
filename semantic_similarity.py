@@ -1,6 +1,9 @@
+import os
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 def get_relevant_articles(df: pd.DataFrame, query: str, top_n: int = 10):
@@ -9,10 +12,10 @@ def get_relevant_articles(df: pd.DataFrame, query: str, top_n: int = 10):
         df["title"].fillna("") + ". " + df["description"].fillna("") + ". "
     )
     model_name = "all-MiniLM-L6-v2"
-    print(f"Loading sentence transformer model {model_name}...")
+    print(f"loading sentence transformer model {model_name}...")
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    print("Generating article embeddings...")
+    print("generating article embeddings...")
     article_embeddings = model.encode(
         df["combined_text"].tolist(), show_progress_bar=True
     )

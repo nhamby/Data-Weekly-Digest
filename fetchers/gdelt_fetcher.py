@@ -20,7 +20,7 @@ def fetch_chunk_from_gdelt(
 
     if to_date is None:
         to_date = datetime.now(timezone.utc).date()
-        
+
     if from_date is None:
         from_date = to_date - timedelta(days=7)
 
@@ -83,7 +83,7 @@ def fetch_all_from_gdelt(query_terms, chunk_size=6, from_date=None, to_date=None
 
     all_gdelt_items = []
 
-    print(f"Fetching GDELT (from {from_date} to {to_date})...")
+    print(f"fetching GDELT (from {from_date} to {to_date})...")
 
     for chunk in chunk_list(query_terms, chunk_size):
 
@@ -96,6 +96,6 @@ def fetch_all_from_gdelt(query_terms, chunk_size=6, from_date=None, to_date=None
         except Exception as e:
             print(f"\tGDELT chunk error: {e}\n")
 
-    print(f"\tTotal GDELT articles fetched: {len(all_gdelt_items)}\n")
+    print(f"\ttotal GDELT articles fetched: {len(all_gdelt_items)}\n")
 
     return all_gdelt_items
