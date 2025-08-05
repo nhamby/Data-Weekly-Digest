@@ -30,7 +30,7 @@ def main():
     os.makedirs(output_dir_archives_top_articles, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y-%m-%d")
-    # timestamp = "2025-07-14"
+    # timestamp = "2025-07-17"
     to_date = datetime.now(timezone.utc).date()
     from_date = to_date - timedelta(days=7)
 
