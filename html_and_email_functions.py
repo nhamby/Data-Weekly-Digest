@@ -1,13 +1,19 @@
+"""HTML email generation and sending functions for digest delivery."""
+
+import logging
 import os
-import pandas as pd
-import pyperclip
 import smtplib
 from datetime import datetime
-from dotenv import load_dotenv
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
+from pathlib import Path
 
+import pandas as pd
+import pyperclip
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 GMAIL_EMAIL_ADDRESS = os.getenv("GMAIL_EMAIL_ADDRESS")
@@ -284,6 +290,12 @@ def send_news_email(df: pd.DataFrame, recipient_email: str):
 
     sender_email = GMAIL_EMAIL_ADDRESS
     sender_password = GMAIL_APP_PASSWORD
+
+    if not sender_email or not sender_password:
+        raise RuntimeError(
+            "GMAIL_EMAIL_ADDRESS or GMAIL_APP_PASSWORD is not set in .env file"
+        )
+
     # smtp_server = "smtp.office365.com"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
