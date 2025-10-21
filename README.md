@@ -17,7 +17,7 @@ An automated news aggregation and curation system that fetches, filters, and sum
 - **Multi-source aggregation** from NewsAPI and GDELT
 - **AI-powered semantic search** using sentence transformers
 - **Smart summarization** with Google Gemini
-- **Beautiful HTML email** with embedded logos and responsive design
+- **Formatted HTML email** with embedded logos and responsive design
 - **Automatic archiving** of articles and HTML digests
 - **Customizable search terms** via JSON configuration
 
